@@ -1,3 +1,43 @@
 html{
     background-color: grey;
 }
+
+.overlay{
+  position: absolute;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  background-color:rgba(0, 179, 15, 0.09);
+  display: NONE;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay.active{
+    display:flex;
+    cursor:wait;
+}
+
+.loading{
+    font-size:5rem;
+    color: white;
+    text-transform: uppercase;
+    animation-name: pulse;
+    animation-duration: 1s;
+    animation-direction: normal;
+    animation-iteration-count: infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity:1;
+    }
+    50% {
+        opacity:0.1;
+    }
+    100% {
+        opacity:1;
+    }
+}
