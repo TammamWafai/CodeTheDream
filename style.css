@@ -1,14 +1,42 @@
+@font-face {
+  font-family: myFirstFont;
+  src: url("Starjedi.ttf");
+} 
+
 html{
-    background-color: grey;
+    height:100%;
+    width:100%;
+    background-color: rgb(0, 0, 0);
+    color:white;
+    font-family: myFirstFont;
 }
 
+#list{
+    overflow:auto;
+    height:90%;
+}
+div.row{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+.div{
+    height: 10px;
+    background-color: red;
+}
+div#allContainer{
+    margin: 25px;
+    height:100%;
+    width:100%;
+}
 .overlay{
   position: absolute;
   top:0;
   left:0;
-  width:100vw;
-  height:100vh;
-  background-color:rgba(0, 179, 15, 0.09);
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  background-color:rgba(251, 255, 0, 0.426);
   display: NONE;
   flex-direction: column;
   justify-content: center;
@@ -40,4 +68,63 @@ html{
     100% {
         opacity:1;
     }
+}
+
+
+
+
+
+
+
+div.scrollmenu {
+  background-color: #333;
+  white-space: nowrap;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+div.scrollmenu a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+}
+
+div.scrollmenu a:hover {
+  background-color: rgba(251, 255, 0, 0.611);
+}
+
+#logo img{
+    width:200px;
+    height:100px;
+    align-self: center;
+    
+}
+#logo{
+    margin:15px;
+    text-align: center;
+  align-items: center;
+}
+/* p:active, h1:active, a:active {
+  background-color: yellow;
+} */
+
+* {
+  box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
 }

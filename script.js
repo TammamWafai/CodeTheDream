@@ -1,3 +1,38 @@
+// async function getJson(url) {
+//     url = `https://swapi.dev/api/films/1/`;
+//     let response = await fetch(url);
+//     let data = await response.json();
+//     return data;
+// }
+function showMsg() {
+    alert('hi');
+}
+async function loadNames(url) {
+    let s;
+    await fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            s = data.title;
+            let c = document.getElementById('details');
+            c.innerHTML = s;
+        })
+
+    return s;
+}
+//     const response = await fetch(url);
+//     const names = await response.json();
+// const response = await fetch(`${url}`)
+
+// .then(response => response.json());
+//     .then(data => respone.title || response.characters);
+
+// x = x.title || x.characters;
+
+// console.log(names.title || names.characters);
+//return response.title || response.characters;
+// return x;
+// }
+
 const SCRIPT = {
     urls: {
         base: 'https://swapi.dev/api/',
@@ -32,6 +67,8 @@ const SCRIPT = {
         document.getElementById('nav').append(df);
     },
 
+
+
     getData: (ev) => {
         if (ev) ev.preventDefault();
         //showoverlay / loader
@@ -52,15 +89,60 @@ const SCRIPT = {
             });
 
     },
+
+
     buildList: (data) => {
         let m = document.getElementById('main');
-        console.log(data);
+        //console.log(data);
         //hide overlay /loader
         document.querySelector('.overlay').classList.remove('active');
         //add data
         m.innerHTML = data.results.map((item) => {
             let nm = item.name || item.title;
-            return `<p>${nm}</p>`;
+            var filmChar = item.films || item.characters;
+            labels = filmChar.toString().split(',');
+            // let o = loadNames(`https://swapi.dev/api/films/1`);
+            // let o = getJson(`https://swapi.dev/api/films/1`);
+            // fetch(`https://swapi.dev/api/films/1`)
+            //     .then(res => res.json())
+            //     .then(data => console.log(data.title));
+            x = `<p>${nm}</p>`;
+            let c = document.getElementById('details');
+            c.append(nm);
+            c.append(document.createElement('br'));
+            async function loadNames(url) {
+                let s;
+                await fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        s = data.title;
+
+
+
+                        c.append(s);
+                        c.append(document.createElement('br'));
+
+                    })
+
+                return s;
+            }
+            for (let i = 0; i < labels.length; i++) {
+                x += loadNames(labels[i]);
+
+            }
+            // c.append(document.createElement('br'));
+
+            // for (let i = 0; i < labels.length; i++) {
+
+            //      fetch(`${labels[i]}`)
+            //         .then(res => res.json())
+            //         .then(data => x += data.title);
+            //     debugger;
+            //     //x = x + y + `<br>`;
+
+            // }
+            // console.log(x);
+            return x;
         }).join(' ');
         //add prev/next nav
         let footer = document.getElementById('footer');
