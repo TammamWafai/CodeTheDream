@@ -8,7 +8,7 @@ https://codethedream.org/pre-work-for-advanced-classes/
 API: Star Wars API - SWAPI https://swapi.dev/
 vanilla JavaScript, HTML, CSS
 
-<img src='./tammamAlwafai.gif'>
+<img src='TammamAlwafaiCTD.gif'>
 The website shows all Sar Wars:
 - Characters
 - Films
