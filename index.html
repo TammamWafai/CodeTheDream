@@ -18,8 +18,10 @@
 
     </div>
 
+    <div>
 
-    <h1 id='header'>Two Equal Columns</h1>
+        <h1 id='header'></h1>
+    </div>
     <div id='loading' class='loading overlay'>
         Loading...
     </div>
@@ -33,8 +35,8 @@
             </div>
         </div>
         <div class="column">
-            <h2 id='detailsTitle'>Column 2</h2>
-            <ul id='details'></ul>
+            <h3 id='detailsTitle'></h3>
+            <ol id='details'></ol>
         </div>
     </div>
 
@@ -44,7 +46,7 @@
     async function test() {
         console.log('start timer');
         document.getElementById('image').classList.add('active');
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
         document.getElementById('image').classList.remove('active');
         console.log('after 1 second');
     }
@@ -64,27 +66,75 @@
 
     async function loadData(type, id) {
         const response = await fetch(`${url}${type}/${id}/`);
-        // await delay(5000);
-
         const data = await response.json();
         if (response.status != 404) {
-            var li = document.createElement("li");
-            if (type == 'films') {
-                li.appendChild(document.createTextNode(id + "  " + data.title));
-                li.className = 'item';
+            if (loadDetails == 1) {
+                // alert("loadDetails=" + loadDetails);
+
+                if (type == 'films') {
+                    var labels = data.characters.toString().split(",");
+                    console.log(labels);
+                    for (let i = 0; i < labels.length; i++) {
+                        let x = labels[i].toString().slice(0, -1).split("/").pop();
+                        console.log(`${url}people/${x}/` + "  x= " + x);
+                        const detailsResponse = await fetch(`${url}people/${x}/`);
+                        const detailsData = await detailsResponse.json();
+                        if (response.status != 404) {
+                            var detailsLi = document.createElement("li");
+                            detailsLi.appendChild(document.createTextNode(detailsData.name));
+                            detailsLi.className = 'detailsItem';
+                            document.getElementById('details').appendChild(detailsLi);
+                        }
+
+                    }
+                    document.getElementById('detailsTitle').append('\'s Characters:');
+
+
+                }
+                else {
+                    var labels = data.films.toString().split(",");
+                    console.log(labels);
+                    for (let i = 0; i < labels.length; i++) {
+                        let x = labels[i].toString().slice(0, -1).split("/").pop();
+                        console.log(`${url}films/${x}/` + "  x= " + x);
+                        const detailsResponse = await fetch(`${url}films/${x}/`);
+                        const detailsData = await detailsResponse.json();
+                        if (response.status != 404) {
+                            var detailsLi = document.createElement("li");
+                            detailsLi.appendChild(document.createTextNode(detailsData.title));
+                            detailsLi.className = 'detailsItem';
+                            document.getElementById('details').appendChild(detailsLi);
+                        }
+
+                    }
+                    document.getElementById('detailsTitle').append('\'s Films:');
+                }
+                // document.getElementById(`${type}`).appendChild(li);
 
             }
+
+
             else {
-                li.appendChild(document.createTextNode(id + "  " + data.name));
-                li.className = 'item';
+                var li = document.createElement("li");
+                if (type == 'films') {
+                    li.appendChild(document.createTextNode(id + "  " + data.title));
+                    li.className = 'item';
+
+                }
+                else {
+                    li.appendChild(document.createTextNode(id + "  " + data.name));
+                    li.className = 'item';
+                }
+                // document.getElementById(`${type}`).appendChild(li);
+                document.getElementById('list').appendChild(li);
+                console.log(data.title, id);
+                document.getElementById('header').innerHTML = type + "  ";
+                document.getElementById('header').append(counter);
+                document.getElementById('loading').innerHTML = "Loading.. <br>" + type + "  " + counter;
             }
-            // document.getElementById(`${type}`).appendChild(li);
-            document.getElementById('list').appendChild(li);
+
         }
-        console.log(data.title, id);
-        document.getElementById('header').innerHTML = type + "  ";
-        document.getElementById('header').append(counter);
-        document.getElementById('loading').innerHTML = "Loading\n" + type + "  " + counter;
+
     }
 
 
@@ -97,32 +147,39 @@
     //     loadData('planets', i);
 
     // }
-
+    let globalType = '';
+    // Listener: Click on a list item to show deatils on the right side
     document.getElementById("list").addEventListener("click", function (e) {
         if (e.target && e.target.matches("li.item")) {
             // e.target.className = "foo"; // new class name here
             // id='detailsTitle'
+            let index = e.target.innerText.slice(0, e.target.innerText.indexOf(' ', 0));
+            // alert(globalType + "  " + index);
+
             document.getElementById('detailsTitle').innerHTML = e.target.innerText;
+
+            document.getElementById('loading').classList.add('active');
+            loadCharPerson(globalType, index);
+            document.getElementById('loading').classList.remove('active');
+
             // loadList(e.target.innerText);
             // alert("clicked " + e.target.innerText);
         }
     });
 
-    // document.getElementById("people").addEventListener("click", function (e) {
-    //     if (e.target && e.target.matches("li.item")) {
-    //         // e.target.className = "foo"; // new class name here
-    //         alert("clicked " + e.target.innerText);
-    //     }
-    // });
+
 
     document.getElementById("scrollmenu").addEventListener("click", function (e) {
         if (e.target && e.target.matches("a")) {
             // if (e.target.className != 'foo') {
             document.getElementById('list').innerHTML = "";
+            document.getElementById('details').innerHTML = '';
+            document.getElementById('detailsTitle').innerHTML = '';
             console.log(e.target.innerText);
             document.getElementById('loading').classList.add('active');
             // document.getElementById('loading').style.display = "block";
             // document.getElementById('list').innerHTML = "";
+
             loadList(e.target.innerText);
 
             // document.getElementById('loading').style.display = "none";
@@ -142,49 +199,119 @@
         //         document.getElementById('list').innerHTML = `<div id='loading'>
         //     <h2> Loading...</h2>
         // </div>`;
-
+        document.getElementById('detailsTitle').innerHTML = "Click on one of the " + type + " to show more details";
         switch (type) {
             case 'Films':
+            case 'films':
                 //6 items,  max id: 6
-
+                globalType = 'films';
                 for (let i = 1; i <= 6; i++) { counter++; await loadData('films', i); }
                 document.getElementById('loading').classList.remove('active');
 
                 break;
             case 'People':
+            case 'people':
+                globalType = 'people';
                 //82 items,  max id: 83
                 for (let i = 1; i <= 83; i++) { counter++; await loadData('people', i); }
                 document.getElementById('loading').classList.remove('active');
 
                 break;
             case 'Starships':
+            case 'starships':
+                globalType = 'starships';
                 //36 items,  max id: 75
                 for (let i = 1; i <= 75; i++) { counter++; await loadData('starships', i); }
                 document.getElementById('loading').classList.remove('active');
 
                 break;
             case 'Vehicles':
+            case 'vehicles':
+                globalType = 'vehicles';
                 // 39 items,  max id: 76
                 for (let i = 1; i <= 76; i++) { counter++; await loadData('vehicles', i); }
                 document.getElementById('loading').classList.remove('active');
 
                 break;
             case 'Species':
+            case 'species':
+                globalType = 'species';
                 // 37 items,  max id: 37
                 for (let i = 1; i <= 37; i++) { counter++; await loadData('species', i); }
                 document.getElementById('loading').classList.remove('active');
 
                 break;
             case 'Planets':
+            case 'planets':
+                globalType = 'planets';
                 // 60 items,  max id: 60
                 for (let i = 1; i <= 60; i++) { counter++; await loadData('planets', i); }
                 document.getElementById('loading').classList.remove('active');
 
                 break;
             default:
-                alert("Click on one of the titles to show the list!");
+                console.log('default');
 
         }
+        counter = 0;
+    }
+
+    let loadDetails = 0;
+    let loadDetailsId = 0;
+
+    async function loadCharPerson(type, id) {
+        //         document.getElementById('list').innerHTML = `<div id='loading'>
+        //     <h2> Loading...</h2>
+        // </div>`;
+        loadDetailsId = id;
+        loadDetails = 1;
+        document.getElementById('details').innerHTML = "";
+        switch (type) {
+            case 'Films':
+            case 'films':
+                //6 items,  max id: 6
+
+                await loadData(type, id);
+                // document.getElementById('loading').classList.remove('active');
+
+                break;
+            case 'People':
+            case 'people':
+                //82 items,  max id: 83
+                await loadData(type, id);
+                document.getElementById('loading').classList.remove('active');
+
+                break;
+            // case 'Starships':
+            //     //36 items,  max id: 75
+            //     for (let i = 1; i <= 75; i++) { counter++; await loadData('starships', i); }
+            //     document.getElementById('loading').classList.remove('active');
+
+            //     break;
+            // case 'Vehicles':
+            //     // 39 items,  max id: 76
+            //     for (let i = 1; i <= 76; i++) { counter++; await loadData('vehicles', i); }
+            //     document.getElementById('loading').classList.remove('active');
+
+            //     break;
+            // case 'Species':
+            //     // 37 items,  max id: 37
+            //     for (let i = 1; i <= 37; i++) { counter++; await loadData('species', i); }
+            //     document.getElementById('loading').classList.remove('active');
+
+            //     break;
+            // case 'Planets':
+            //     // 60 items,  max id: 60
+            //     for (let i = 1; i <= 60; i++) { counter++; await loadData('planets', i); }
+            //     document.getElementById('loading').classList.remove('active');
+
+            //     break;
+            default:
+                console.log('default');
+
+        }
+        loadDetails = 0;
+        // counter = 0;
     }
 </script>
 
